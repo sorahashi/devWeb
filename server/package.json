@@ -1,0 +1,35 @@
+{
+  "name": "webapp-server",
+  "version": "1.0.0",
+  "description": "Fastify server for web application",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push",
+    "db:migrate": "prisma migrate dev",
+    "db:studio": "prisma studio"
+  },
+  "keywords": ["fastify", "nodejs", "mysql", "prisma"],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "fastify": "^4.24.3",
+    "@fastify/cors": "^8.4.0",
+    "@fastify/helmet": "^11.1.1",
+    "mysql2": "^3.6.5",
+    "dotenv": "^16.3.1",
+    "@prisma/client": "^5.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "prisma": "^5.7.0",
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "@types/jest": "^29.5.8"
+  }
+}

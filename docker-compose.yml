@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # MySQL データベース
+  mysql:
+    image: mysql:8.0
+    container_name: webapp_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: webapp_db
+      MYSQL_USER: webapp_user
+      MYSQL_PASSWORD: webapp_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    networks:
+      - webapp_network
+
+  # Node.js Fastify サーバー
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: webapp_server
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: webapp_db
+      DB_USER: webapp_user
+      DB_PASSWORD: webapp_password
+      DATABASE_URL: mysql://webapp_user:webapp_password@mysql:3306/webapp_db
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - mysql
+    networks:
+      - webapp_network
+
+  # Svelte クライアント
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: webapp_client
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      VITE_API_URL: http://localhost:3000
+    networks:
+      - webapp_network
+
+volumes:
+  mysql_data:
+
+networks:
+  webapp_network:
+    driver: bridge

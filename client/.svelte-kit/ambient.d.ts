@@ -31,8 +31,8 @@ declare module '$env/static/private' {
 	export const HOSTNAME: string;
 	export const YARN_VERSION: string;
 	export const npm_node_execpath: string;
-	export const npm_config_noproxy: string;
 	export const SHLVL: string;
+	export const npm_config_noproxy: string;
 	export const HOME: string;
 	export const npm_package_json: string;
 	export const npm_config_userconfig: string;
@@ -50,20 +50,14 @@ declare module '$env/static/private' {
 	export const npm_lifecycle_event: string;
 	export const npm_config_globalconfig: string;
 	export const npm_config_init_module: string;
-	export const npm_execpath: string;
 	export const PWD: string;
+	export const npm_execpath: string;
 	export const npm_config_global_prefix: string;
 	export const npm_command: string;
 	export const VITE_API_URL: string;
 	export const INIT_CWD: string;
 	export const EDITOR: string;
-	export const TEST: string;
-	export const VITEST: string;
 	export const NODE_ENV: string;
-	export const PROD: string;
-	export const DEV: string;
-	export const BASE_URL: string;
-	export const MODE: string;
 }
 
 /**
@@ -98,8 +92,8 @@ declare module '$env/dynamic/private' {
 		HOSTNAME: string;
 		YARN_VERSION: string;
 		npm_node_execpath: string;
-		npm_config_noproxy: string;
 		SHLVL: string;
+		npm_config_noproxy: string;
 		HOME: string;
 		npm_package_json: string;
 		npm_config_userconfig: string;
@@ -117,20 +111,14 @@ declare module '$env/dynamic/private' {
 		npm_lifecycle_event: string;
 		npm_config_globalconfig: string;
 		npm_config_init_module: string;
-		npm_execpath: string;
 		PWD: string;
+		npm_execpath: string;
 		npm_config_global_prefix: string;
 		npm_command: string;
 		VITE_API_URL: string;
 		INIT_CWD: string;
 		EDITOR: string;
-		TEST: string;
-		VITEST: string;
 		NODE_ENV: string;
-		PROD: string;
-		DEV: string;
-		BASE_URL: string;
-		MODE: string;
 		[key: `PUBLIC_${string}`]: undefined;
 		[key: `${string}`]: string | undefined;
 	}

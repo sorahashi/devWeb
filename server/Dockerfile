@@ -2,6 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
+# Prismaエンジンが必要とするOpenSSLをインストール
+RUN apk add --no-cache openssl
+
 # パッケージファイルをコピー
 COPY package*.json ./
 

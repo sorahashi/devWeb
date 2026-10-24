@@ -1,0 +1,36 @@
+{
+  "family": "devweb-client",
+  "requiresCompatibilities": ["FARGATE"],
+  "networkMode": "awsvpc",
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::<ACCOUNT_ID>:role/ecsTaskRole",
+  "containerDefinitions": [
+    {
+      "name": "devweb-client",
+      "image": "<ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/devweb-client:latest",
+      "essential": true,
+      "portMappings": [
+        {
+          "containerPort": 4173,
+          "hostPort": 4173,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        { "name": "HOST", "value": "0.0.0.0" },
+        { "name": "PORT", "value": "4173" },
+        { "name": "VITE_API_URL", "value": "https://api.example.com" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/devweb-client",
+          "awslogs-region": "<REGION>",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

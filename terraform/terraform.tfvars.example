@@ -1,0 +1,18 @@
+# Terraform usage example
+#
+# 1. Change values in terraform.tfvars
+# 2. Run:
+#    terraform init
+#    terraform plan
+#    terraform apply
+#
+# 3. After apply, push images manually or use scripts/deploy-aws-ecs.sh
+#
+# Example values:
+# aws_region = "ap-northeast-1"
+# project_name = "devweb"
+# environment = "prod"
+# frontend_domain = "example.com"
+# api_domain = "api.example.com"
+# db_username = "admin"
+# db_password = "ChangeMe123!"

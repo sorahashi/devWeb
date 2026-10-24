@@ -1,18 +1,21 @@
 const fastify = require('fastify')({ logger: true });
 const { PrismaClient } = require('@prisma/client');
 
-// Prismaクライアントの初期化
 const prisma = new PrismaClient();
+const port = Number(process.env.PORT || 3000);
+const host = process.env.HOST || '0.0.0.0';
+const corsOrigins = (process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
-// プラグインを登録
 fastify.register(require('@fastify/cors'), {
-  origin: true,
+  origin: corsOrigins.length > 0 ? corsOrigins : true,
   credentials: true
 });
 
 fastify.register(require('@fastify/helmet'));
 
-// ヘルスチェックエンドポイント
 fastify.get('/health', async (request, reply) => {
   try {
     await prisma.$queryRaw`SELECT 1 as status`;
@@ -23,7 +26,6 @@ fastify.get('/health', async (request, reply) => {
   }
 });
 
-// ユーザー一覧取得エンドポイント
 fastify.get('/api/users', async (request, reply) => {
   try {
     const users = await prisma.user.findMany({
@@ -41,11 +43,10 @@ fastify.get('/api/users', async (request, reply) => {
   }
 });
 
-// ユーザー作成エンドポイント
 fastify.post('/api/users', async (request, reply) => {
   try {
     const { username, email, password } = request.body;
-    
+
     if (!username || !email || !password) {
       return reply.status(400).send({ error: 'Missing required fields' });
     }
@@ -54,13 +55,13 @@ fastify.post('/api/users', async (request, reply) => {
       data: {
         username,
         email,
-        passwordHash: password // 実際のアプリではパスワードをハッシュ化する
+        passwordHash: password
       }
     });
 
-    return { 
-      message: 'User created successfully', 
-      userId: user.id 
+    return {
+      message: 'User created successfully',
+      userId: user.id
     };
   } catch (error) {
     fastify.log.error(error);
@@ -71,12 +72,11 @@ fastify.post('/api/users', async (request, reply) => {
   }
 });
 
-// ユーザー更新エンドポイント
 fastify.put('/api/users/:id', async (request, reply) => {
   try {
     const { id } = request.params;
     const { username, email } = request.body;
-    
+
     if (!username || !email) {
       return reply.status(400).send({ error: 'Missing required fields' });
     }
@@ -86,8 +86,8 @@ fastify.put('/api/users/:id', async (request, reply) => {
       data: { username, email }
     });
 
-    return { 
-      message: 'User updated successfully', 
+    return {
+      message: 'User updated successfully',
       user: {
         id: user.id,
         username: user.username,
@@ -107,11 +107,10 @@ fastify.put('/api/users/:id', async (request, reply) => {
   }
 });
 
-// ユーザー削除エンドポイント
 fastify.delete('/api/users/:id', async (request, reply) => {
   try {
     const { id } = request.params;
-    
+
     await prisma.user.delete({
       where: { id: parseInt(id) }
     });
@@ -126,19 +125,18 @@ fastify.delete('/api/users/:id', async (request, reply) => {
   }
 });
 
-// パスワード更新エンドポイント
 fastify.patch('/api/users/:id/password', async (request, reply) => {
   try {
     const { id } = request.params;
     const { password } = request.body;
-    
+
     if (!password) {
       return reply.status(400).send({ error: 'Password is required' });
     }
 
     await prisma.user.update({
       where: { id: parseInt(id) },
-      data: { passwordHash: password } // 実際のアプリではパスワードをハッシュ化する
+      data: { passwordHash: password }
     });
 
     return { message: 'Password updated successfully' };
@@ -151,18 +149,16 @@ fastify.patch('/api/users/:id/password', async (request, reply) => {
   }
 });
 
-// サーバー起動
 const start = async () => {
   try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
-    fastify.log.info(`Server is running on port 3000`);
+    await fastify.listen({ port, host });
+    fastify.log.info(`Server is running on ${host}:${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
 };
 
-// グレースフルシャットダウン
 process.on('SIGINT', async () => {
   await prisma.$disconnect();
   process.exit(0);

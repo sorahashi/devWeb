@@ -4,7 +4,7 @@ WORKDIR /app
 RUN apk add --no-cache openssl
 
 COPY package*.json ./
-RUN npm ci --include=dev
+RUN npm ci --omit=dev
 
 COPY prisma ./prisma/
 RUN npx prisma generate
@@ -12,6 +12,8 @@ RUN npx prisma generate
 COPY . .
 
 ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
 EXPOSE 3000
 
-CMD ["sh", "-c", "npx prisma generate && npm start"]
+CMD ["sh", "-c", "npx prisma generate && node src/index.js"]
